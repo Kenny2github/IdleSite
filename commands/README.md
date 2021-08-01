@@ -1,0 +1,1 @@
+This directory contains the game commands and is added to PATH by the activate script.
