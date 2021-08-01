@@ -1,4 +1,3 @@
-from typing import List
 import argparse
 
 choices = ['hi', 'hello', 'hey']
@@ -9,6 +8,6 @@ parser.add_argument('word', nargs='?', choices=choices,
 
 completion = "-W '%s'" % ' '.join(choices)
 
-def main(args: List[str]):
+def main(args: list[str]):
     cmdargs = parser.parse_args(args[1:])
     print('Hello World!', (cmdargs.word or '').title())
