@@ -5,11 +5,10 @@ if [ -z "${IDLESITE_ENV+x}" ]; then
 	PATHCOMPONENT="$(readlink -f $IDLESITE_ENV)/commands"
 	export PATH="$PATH:$PATHCOMPONENT"
 	unset PATHCOMPONENT
-fi
 
-for CMD in commands/*; do
-	CMD=$(basename "$CMD")
-	# skip non-executable files
-	if [ ! -x "commands/$CMD" ]; then continue; fi
-	echo $CMD
-done
+	CMDS="$(find commands/ -type f -executable -printf "%P ")"
+	for CMD in $CMDS; do
+		eval complete $($CMD --completion) $CMD
+	done
+	complete -W "$CMDS" -E
+fi
