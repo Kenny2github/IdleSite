@@ -1,0 +1,7 @@
+{
+	"lang-name": "English",
+	"no-save-slots": "You do not have any existing save slots. Slot {0} will now be created for you.",
+	"one-save-slot": "You do not have any save slot currently in use. {0} has been automatically selected since it is your only existing slot.",
+	"many-save-slots": "You have multiple save slots but have not specified which to use by means of the --save-slot option. Your current existing slots are:",
+	"save-slot-prompt": "Please enter the slot to save your progress into: "
+}
