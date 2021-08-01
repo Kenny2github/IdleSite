@@ -52,10 +52,9 @@ if not completion: # all this machinery needs to be ignored for --completion
 
 try:
     game = importlib.import_module('game.' + command)
-except ImportError:
+    if completion:
+        print(game.completion)
+    else:
+        game.main(sys.argv)
+except (ImportError, AttributeError):
     sys.exit('invalid command %r' % command)
-
-if completion:
-    print(game.completion)
-else:
-    game.main(sys.argv)
