@@ -1,0 +1,1 @@
+This directory contains save slots and should only contain this file on clone.

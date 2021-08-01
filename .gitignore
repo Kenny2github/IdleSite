@@ -1,2 +1,4 @@
 *.py?
 __pycache__
+saves/*
+!saves/README.md
