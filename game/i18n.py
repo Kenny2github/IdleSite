@@ -31,5 +31,8 @@ if not LANG: # none set
 with open('i18n/%s.json' % LANG) as lang:
     STRINGS: dict[str, str] = json.load(lang)
 
-def i18n(key: str, *args):
+def i18n(key: str, *args) -> str:
     return STRINGS[key].format(*args)
+
+def pi18n(key: str, *args, **print_kwargs):
+    print(i18n(key, *args), **print_kwargs)
