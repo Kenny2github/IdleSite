@@ -23,7 +23,7 @@ class _JL(type):
     @classmethod
     def unserialize(cls, self):
         """Load a class object from JSON."""
-        if isinstance(self, (str, int, float, bool, type(None))):
+        if isinstance(self, (str, int, float, Decimal, bool, type(None))):
             return self
         if isinstance(self, dict):
             if '__decimal__' in self:

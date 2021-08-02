@@ -51,4 +51,4 @@ def load_slot(slot: str) -> SaveSlot:
 
 def save_slot(slot: str, data: SaveSlot):
     with open('saves/%s' % slot, 'w') as slotfile:
-        json.dump(data, slotfile)
+        json.dump(data.serialize(data), slotfile)
