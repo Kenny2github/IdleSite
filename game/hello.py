@@ -8,6 +8,6 @@ parser.add_argument('word', nargs='?', choices=choices,
 
 completion = "-W '%s'" % ' '.join(choices)
 
-def main(args: list[str]):
+def main(args: list[str], slot: str):
     cmdargs = parser.parse_args(args[1:])
     print('Hello World!', (cmdargs.word or '').title())
