@@ -26,8 +26,9 @@ try:
     if completion:
         print(game.completion)
     else:
-        from game import get_slot
-        slot = get_slot(sys.argv)
+        from game import get_slot, load_slot
+        slot = load_slot(get_slot(sys.argv))
+        slot.update()
         game.main(sys.argv, slot)
 except (ImportError, AttributeError):
     sys.exit('invalid command %r' % command)

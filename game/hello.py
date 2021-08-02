@@ -1,4 +1,5 @@
 import argparse
+from .slot import SaveSlot
 
 choices = ['hi', 'hello', 'hey']
 
@@ -8,6 +9,6 @@ parser.add_argument('word', nargs='?', choices=choices,
 
 completion = "-W '%s'" % ' '.join(choices)
 
-def main(args: list[str], slot: str):
+def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
     print('Hello World!', (cmdargs.word or '').title())
