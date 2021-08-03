@@ -23,6 +23,11 @@ else:
 
 try:
     game = importlib.import_module('game.' + command.replace('-', '_'))
+except ImportError:
+    raise SystemExit('game: error: invalid command %r' % command) from None
+else:
+    if not (hasattr(game, 'completion') and hasattr(game, 'main')):
+        sys.exit('game: error: invalid command %r' % command)
     if completion:
         print(game.completion)
     elif command.startswith('create'):
@@ -37,5 +42,3 @@ try:
             sys.exit(game.main(sys.argv, slot) or 0)
         finally:
             save_slot(slot_name, slot)
-except (ImportError, AttributeError):
-    raise SystemExit('game: error: invalid command %r' % command) from None
