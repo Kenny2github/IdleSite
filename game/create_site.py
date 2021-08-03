@@ -5,8 +5,7 @@ from . import save_slot
 from .slot import SaveSlot
 from .i18n import i18n, pi18n
 
-parser = argparse.ArgumentParser(
-    description='Start a new game: create a new site.')
+parser = argparse.ArgumentParser(description=i18n('create-site-desc'))
 parser.add_argument(
     '-d', '--difficulty', type=Decimal, default=Decimal('1'),
     help=i18n('create-site-difficulty-opt'))
