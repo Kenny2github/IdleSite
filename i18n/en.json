@@ -1,9 +1,16 @@
 {
 	"creating-slot": "Creating slot '{0}'...",
 	"no-save-slots": "You do not have any existing save slots. Slot '{0}' will now be created for you.",
-	"one-save-slot": "You do not have any save slot currently in use. '{0}' has been automatically selected since it is your only existing slot.",
+	"one-save-slot": "You do not have any save slot currently in use. Slot '{0}' has been automatically selected since it is your only existing slot.",
 	"many-save-slots": "You have multiple save slots but have not specified which to use by means of the --save-slot option. Your current existing slots are:",
 	"save-slot-prompt": "Please enter the slot to save your progress into: ",
 	"wrong-view-day-count": "Number of days worth of views does not match the number of days that have passed",
+	"create-site-difficulty-opt": "Difficulty multiplier for the game, default 1",
+	"create-site-day-length-opt": "Length of one day, in seconds. Default is one real day. Set lower for faster game.",
+	"create-site-save-slot-opt": "Name of save slot to use. If unspecified, you will be asked interactively to name your slot, unless --non-interactive is specified. If you specify an existing slot's name, you will be prompted to overwrite it, unless --force-overwrite is specified, in which case it will be, or --non-interactive is specified, in which case it will not.",
+	"create-site-force-overwrite-opt": "If specified along with --save-slot, the named slot will be overwritten unconditionally.",
+	"create-site-non-interactive-opt": "If specified, stdout and stdin are guaranteed to be unused. If specified without --save-slot, or without --force-overwrite on an existing slot name, exits with status 1.",
+	"create-site-overwrite-conf": "Do you really intend to overwrite slot '{0}'? (y/n) ",
+	"create-site-site-created": "Site created under slot '{0}' with a difficulty multiplier of {1} and a day length of {2} seconds.",
 	"lang-name": "English"
 }

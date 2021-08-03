@@ -9,8 +9,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # to be specified after the command name
 
 if len(sys.argv) < 2:
-    sys.exit('%s: error: cannot directly run '
-             'the game module with no arguments' % sys.argv[0])
+    sys.exit('game: error: cannot directly run '
+             'the game module with no arguments')
 
 del sys.argv[0]
 
@@ -22,17 +22,20 @@ else:
     completion = False
 
 try:
-    game = importlib.import_module('game.' + command)
+    game = importlib.import_module('game.' + command.replace('-', '_'))
     if completion:
         print(game.completion)
+    elif command.startswith('create'):
+        # special behavior for "create site"
+        sys.exit(game.main(sys.argv) or 0)
     else:
         from game import get_slot, load_slot, save_slot
         slot_name = get_slot(sys.argv)
         slot = load_slot(slot_name)
         slot.update()
         try:
-            game.main(sys.argv, slot)
+            sys.exit(game.main(sys.argv, slot) or 0)
         finally:
             save_slot(slot_name, slot)
 except (ImportError, AttributeError):
-    sys.exit('invalid command %r' % command)
+    raise SystemExit('game: error: invalid command %r' % command) from None
