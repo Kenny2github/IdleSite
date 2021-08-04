@@ -37,5 +37,8 @@
 	"check-stats-key-day": "Day length:\t\t{0}s",
 	"check-stats-key-ctime": "Game started:\t\t{0}",
 	"check-stats-key-mtime": "Last touched:\t\t{0}",
+	"check-views-key-day": "Day",
+	"check-views-key-views": "Views",
+	"check-views-key-cumulative": "Cumulative",
 	"lang-name": "English"
 }
