@@ -34,10 +34,12 @@ class _JL(type):
                 ocls = cls.cls_names[self.pop('__mname__')]
                 return ocls(**self)
             return self
-        if isinstance(self, (list, tuple)):
+        if isinstance(self, list):
             for i in range(len(self)):
                 self[i] = cls.unserialize(self[i])
             return self
+        if isinstance(self, tuple):
+            return tuple(map(cls.unserialize, self))
         raise TypeError('cannot unserialize %r of type %r' % (
             self, type(self).__name__))
 
@@ -55,10 +57,12 @@ class _JS:
             for key in list(self.keys()):
                 self[key] = cls.serialize(self[key])
             return self
-        if isinstance(self, (list, tuple)):
+        if isinstance(self, list):
             for i in range(len(self)):
                 self[i] = cls.serialize(self[i])
             return self
+        if isinstance(self, tuple):
+            return tuple(map(cls.serialize, self))
         if isinstance(self, _JS): # any _JS subclass, not just cls
             obj = {}
             for attr in self.__annotations__:
@@ -209,7 +213,7 @@ class SaveSlot(_JS, metaclass=_JL):
                 transaction.clear()
             # update views
             if self.views:
-                self.view_rate += math.floor(math.log10(self.views[-1][-1]))
+                self.view_rate += math.floor(math.log10(self.views[-1][-1] or 1))
                 self.views.append((
                     self.view_rate, self.views[-1][-1] + self.view_rate))
             else:
