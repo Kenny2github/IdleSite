@@ -19,7 +19,7 @@
 	"check-value-opt": "The value to check.",
 	"check-args-opt": "Arguments passed to specific value command.",
 	"check-graph-opt": "Graph views over time (requires Python matplotlib). Specify a number of days to graph that many days into the past (default 7). Specify 0 to graph for all time.",
-	"check-output-opt": "The filename to output to, which will be unconditionally overwritten.",
+	"check-output-opt": "The filename to output graphs to, which will be unconditionally overwritten.",
 	"check-table-opt": "Output a table of views over time. Specify a number of days to list that many days into the past (default 7 if specified, 1 if not). Specify 0 to list for all time.",
 	"check-csv-opt": "Output the table in CSV format. (No effect with --graph.)",
 	"check-stat-opt": "Output these statistics in machine-readable form. Each statistic specified will be output without units on its own line. Specify --stats all to get all stats, or --stats <name> [names ...] to get specific stats only, in the order you specify them.",
