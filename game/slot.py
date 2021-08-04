@@ -170,6 +170,19 @@ class SaveSlot(_JS, metaclass=_JL):
         """The number of self-promo channels available to advertise to."""
         return 10000
 
+    @property
+    def views_today(self) -> int:
+        """The number of views during the most recent day."""
+        if self.views:
+            return self.views[-1][0]
+        return 0
+    @property
+    def views_total(self) -> int:
+        """The number of views during the lifetime of the site."""
+        if self.views:
+            return self.views[-1][-1]
+        return 0
+
     def update(self):
         """Perform updates since last day checked"""
         last_touch = self.last_touch
