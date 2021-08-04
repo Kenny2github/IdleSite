@@ -28,11 +28,11 @@ completion = "-o nosort -W 'views stats -I --non-interactive " \
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
-def views(cmdargs, slot: SaveSlot):
-    cmdargs = views_parser.parse_args(cmdargs.args)
+def views(args: list[str], slot: SaveSlot):
+    cmdargs = views_parser.parse_args(args)
 
-def stats(cmdargs, slot: SaveSlot):
-    cmdargs = stats_parser.parse_args(cmdargs.args)
+def stats(args: list[str], slot: SaveSlot):
+    cmdargs = stats_parser.parse_args(args)
     data = {
         'views': slot.views[-1][0] if slot.views else 0,
         'cumulative': slot.views[-1][1] if slot.views else 0,
@@ -71,4 +71,4 @@ def stats(cmdargs, slot: SaveSlot):
 
 def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
-    return globals()[cmdargs.value](cmdargs, slot)
+    return globals()[cmdargs.value](cmdargs.args, slot)
