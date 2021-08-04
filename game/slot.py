@@ -34,7 +34,7 @@ class _JL(type):
                 ocls = cls.cls_names[self.pop('__mname__')]
                 return ocls(**self)
             return self
-        if isinstance(self, list):
+        if isinstance(self, (list, tuple)):
             for i in range(len(self)):
                 self[i] = cls.unserialize(self[i])
             return self
@@ -55,7 +55,7 @@ class _JS:
             for key in list(self.keys()):
                 self[key] = cls.serialize(self[key])
             return self
-        if isinstance(self, list):
+        if isinstance(self, (list, tuple)):
             for i in range(len(self)):
                 self[i] = cls.serialize(self[i])
             return self
@@ -195,6 +195,9 @@ class SaveSlot(_JS, metaclass=_JL):
             for transaction in cleared_transactions:
                 transaction.clear()
             # update views
-            self.view_rate += math.floor(math.log10(self.views[-1][-1]))
-            self.views.append((
-                self.view_rate, self.views[-1][-1] + self.view_rate))
+            if self.views:
+                self.view_rate += math.floor(math.log10(self.views[-1][-1]))
+                self.views.append((
+                    self.view_rate, self.views[-1][-1] + self.view_rate))
+            else:
+                self.views.append((self.view_rate, self.view_rate))
