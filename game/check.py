@@ -10,12 +10,14 @@ parser.add_argument('args', nargs=argparse.REMAINDER,
                     help=i18n('check-args-opt'))
 views_parser = argparse.ArgumentParser(
     prog='check views', description=i18n('check-views-desc'))
-views_parser.add_argument(
+group = views_parser.add_mutually_exclusive_group()
+group.add_argument(
     '-g', '--graph', nargs='?', metavar='days', const=7, type=int,
     help=i18n('check-graph-opt'))
 views_parser.add_argument(
     '-t', '--table', nargs='?', metavar='days', const=7, type=int, default=1,
     help=i18n('check-table-opt'))
+group.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
 stats_parser = argparse.ArgumentParser(
     prog='check stats', description=i18n('check-stats-desc'))
 stats_parser.add_argument('-n', '--stats', choices=[
