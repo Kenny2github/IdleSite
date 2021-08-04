@@ -14,7 +14,7 @@ views_parser.add_argument(
     '-g', '--graph', nargs='?', metavar='days', const=7, type=int,
     help=i18n('check-graph-opt'))
 views_parser.add_argument(
-    '-t', '--table', nargs='?', metavar='days', const=7, type=int,
+    '-t', '--table', nargs='?', metavar='days', const=7, type=int, default=1,
     help=i18n('check-table-opt'))
 stats_parser = argparse.ArgumentParser(
     prog='check stats', description=i18n('check-stats-desc'))
