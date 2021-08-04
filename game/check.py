@@ -28,8 +28,8 @@ stats_parser.add_argument('-n', '--stats', choices=[
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
 ], nargs='*', help=i18n('check-stat-opt'))
 
-completion = "-o nosort -W 'views stats -g --graph " \
-    "-t --table -n --stats'"
+completion = "-o nosort -W 'views stats -g --graph -o --output " \
+    "-t --table --csv -n --stats'"
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
