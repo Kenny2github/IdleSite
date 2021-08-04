@@ -23,6 +23,7 @@
 	"check-stat-opt": "Output these statistics in machine-readable form. Each statistic specified will be output without units on its own line. Specify --stats all to get all stats, or --stats <name> [names ...] to get specific stats only, in the order you specify them.",
 	"check-stats-data": "Data:",
 	"check-stats-config": "Configuration:",
+	"check-stats-key-today": "Day number:\t\t{0}",
 	"check-stats-key-views": "Views today:\t\t{0}",
 	"check-stats-key-cumulative": "Cumulative:\t\t{0}",
 	"check-stats-key-money": "Your money:\t\t${0}",

@@ -186,6 +186,10 @@ class SaveSlot(_JS, metaclass=_JL):
         if self.views:
             return self.views[-1][-1]
         return 0
+    @property
+    def today(self) -> int:
+        """The current day number."""
+        return (self.last_touch - self.first_touch) // self.day_length
 
     def update(self):
         """Perform updates since last day checked"""

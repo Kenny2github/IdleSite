@@ -34,6 +34,7 @@ def views(args: list[str], slot: SaveSlot):
 def stats(args: list[str], slot: SaveSlot):
     cmdargs = stats_parser.parse_args(args)
     data = {
+        'today': slot.today,
         'views': slot.views_today,
         'cumulative': slot.views_total,
         'money': str(slot.money),
