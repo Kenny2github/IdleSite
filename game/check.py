@@ -1,3 +1,4 @@
+import os
 import time
 import argparse
 from .slot import SaveSlot
@@ -10,14 +11,16 @@ parser.add_argument('args', nargs=argparse.REMAINDER,
                     help=i18n('check-args-opt'))
 views_parser = argparse.ArgumentParser(
     prog='check views', description=i18n('check-views-desc'))
-group = views_parser.add_mutually_exclusive_group()
-group.add_argument(
+views_parser.add_argument(
     '-g', '--graph', nargs='?', metavar='days', const=7, type=int,
     help=i18n('check-graph-opt'))
 views_parser.add_argument(
+    '-o', '--output', metavar='filename',
+    help=i18n('check-output-opt'))
+views_parser.add_argument(
     '-t', '--table', nargs='?', metavar='days', const=7, type=int, default=1,
     help=i18n('check-table-opt'))
-group.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
+views_parser.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
 stats_parser = argparse.ArgumentParser(
     prog='check stats', description=i18n('check-stats-desc'))
 stats_parser.add_argument('-n', '--stats', choices=[
@@ -30,8 +33,40 @@ completion = "-o nosort -W 'views stats -g --graph " \
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
+def graph(days: int, slot: SaveSlot, outfile: str):
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        raise SystemExit(i18n('check-views-needs-matplotlib')) from None
+    x = list(range(slot.today))[-days:]
+    if slot.views:
+        views, cumulative = zip(*slot.views[-days:])
+    else:
+        views, cumulative = (), ()
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+    plot1, = ax1.plot(x, views, 'r-')
+    plot2, = ax2.plot(x, cumulative, 'b-')
+    ax1.set_xlabel(i18n('check-views-key-day'))
+    ax1.set_ylabel(i18n('check-views-key-views'))
+    ax1.yaxis.label.set_color(plot1.get_color())
+    ax2.set_ylabel(i18n('check-views-key-cumulative'))
+    ax2.yaxis.label.set_color(plot2.get_color())
+    if outfile is None:
+        fname = 'views-graph.png'
+        i = 0
+        while os.path.exists(fname):
+            i += 1
+            fname = f'views-graph.{i}.png'
+    else:
+        fname = outfile
+    fig.savefig(fname, bbox_inches='tight')
+    pi18n('check-views-fig-saved', fname)
+
 def views(args: list[str], slot: SaveSlot):
     cmdargs = views_parser.parse_args(args)
+    if cmdargs.graph is not None:
+        graph(cmdargs.graph, slot, cmdargs.output)
     if cmdargs.csv:
         sep = ','
     else:
