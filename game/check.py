@@ -11,11 +11,11 @@ parser.add_argument('args', nargs=argparse.REMAINDER,
 views_parser = argparse.ArgumentParser(
     prog='check views', description=i18n('check-views-desc'))
 views_parser.add_argument(
-    '-I', '--non-interactive', action='store_false', dest='interactive',
-    help=i18n('check-non-interactive-opt'))
-views_parser.add_argument(
-    '-g', '--graph', nargs='?', metavar='days', default=7,
+    '-g', '--graph', nargs='?', metavar='days', const=7, type=int,
     help=i18n('check-graph-opt'))
+views_parser.add_argument(
+    '-t', '--table', nargs='?', metavar='days', const=7, type=int,
+    help=i18n('check-table-opt'))
 stats_parser = argparse.ArgumentParser(
     prog='check stats', description=i18n('check-stats-desc'))
 stats_parser.add_argument('-n', '--stats', choices=[
@@ -23,8 +23,8 @@ stats_parser.add_argument('-n', '--stats', choices=[
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
 ], nargs='*', help=i18n('check-stat-opt'))
 
-completion = "-o nosort -W 'views stats -I --non-interactive " \
-    "-g --graph -n --stats'"
+completion = "-o nosort -W 'views stats -g --graph " \
+    "-t --table -n --stats'"
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
