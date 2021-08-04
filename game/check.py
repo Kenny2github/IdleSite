@@ -32,25 +32,24 @@ TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
 def views(args: list[str], slot: SaveSlot):
     cmdargs = views_parser.parse_args(args)
-    if cmdargs.table is not None:
-        if cmdargs.csv:
-            sep = ','
-        else:
-            sep = '\t'
-        header = sep.join((
-            i18n('check-views-key-day'),
-            i18n('check-views-key-views'),
-            i18n('check-views-key-cumulative')
-        ))
-        print(header)
-        if not cmdargs.csv:
-            print('-' * (16 + len(header.rsplit(sep, 1)[-1])))
-        for i, (day, (views, cumulative)) in enumerate(
-            reversed(tuple(enumerate(slot.views)))
-        ):
-            if cmdargs.table > 0 and i >= cmdargs.table:
-                break
-            print(day, views, cumulative, sep=sep)
+    if cmdargs.csv:
+        sep = ','
+    else:
+        sep = '\t'
+    header = sep.join((
+        i18n('check-views-key-day'),
+        i18n('check-views-key-views'),
+        i18n('check-views-key-cumulative')
+    ))
+    print(header)
+    if not cmdargs.csv:
+        print('-' * (16 + len(header.rsplit(sep, 1)[-1])))
+    for i, (day, (views, cumulative)) in enumerate(
+        reversed(tuple(enumerate(slot.views)))
+    ):
+        if cmdargs.table > 0 and i >= cmdargs.table:
+            break
+        print(day, views, cumulative, sep=sep)
 
 def stats(args: list[str], slot: SaveSlot):
     cmdargs = stats_parser.parse_args(args)
