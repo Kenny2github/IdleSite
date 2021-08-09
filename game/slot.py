@@ -79,16 +79,16 @@ class Boost(_JS):
 
     expires: int # day number when boost expires
 
+    def activate(self, slot: SaveSlot) -> None:
+        """Activate this boost."""
+        raise NotImplementedError
+
     def boost(self, slot: SaveSlot) -> int:
         """The amount of view boost, in views per day."""
         raise NotImplementedError
 
     def cost(self, slot: SaveSlot) -> Decimal:
         """The cost of this much of a view boost."""
-        raise NotImplementedError
-
-    def activate(self, slot: SaveSlot) -> None:
-        """Activate this boost."""
         raise NotImplementedError
 
 @dataclass
