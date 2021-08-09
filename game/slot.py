@@ -150,6 +150,7 @@ class SaveSlot(_JS, metaclass=_JL):
     # [(views, cumulative), (views next day, cumulative)]
     views: list[tuple[int, int]] = field(default_factory=list)
     view_rate: int = 0 # views per day, permanent rate
+    # temporary boosts only
     boosts: list[Boost] = field(default_factory=list)
 
     transactions_pending: list[Transaction] = field(default_factory=list)
@@ -218,9 +219,13 @@ class SaveSlot(_JS, metaclass=_JL):
             for transaction in cleared_transactions:
                 transaction.clear()
             # update views
+            view_rate = self.view_rate + sum(
+                boost.boost(self) for boost in self.boosts)
             if self.views:
-                self.view_rate += math.floor(math.log10(self.views[-1][-1] or 1))
+                bonus = math.floor(math.log10(self.views[-1][-1] or 1))
+                self.view_rate += bonus
+                view_rate += bonus
                 self.views.append((
-                    self.view_rate, self.views[-1][-1] + self.view_rate))
+                    view_rate, self.views[-1][-1] + view_rate))
             else:
-                self.views.append((self.view_rate, self.view_rate))
+                self.views.append((view_rate, view_rate))
