@@ -25,6 +25,8 @@ class _JL(type):
         """Load a class object from JSON."""
         if isinstance(self, (str, int, float, Decimal, bool, type(None))):
             return self
+        if getattr(type(self), '__mname__', None) in cls.cls_names:
+            return self
         if isinstance(self, dict):
             if '__decimal__' in self:
                 return Decimal(self['__decimal__'])
