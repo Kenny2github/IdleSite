@@ -1,12 +1,15 @@
 import os
 import time
 import argparse
-from .slot import SaveSlot
+from .slot import Boost, SaveSlot
 from .i18n import i18n, pi18n
 
+SUBCMDS = [
+    'views', 'stats', 'boosts'
+]
+
 parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
-parser.add_argument('value', choices=['views', 'stats'],
-                    help=i18n('check-value-opt'))
+parser.add_argument('value', choices=SUBCMDS, help=i18n('check-value-opt'))
 parser.add_argument('args', nargs=argparse.REMAINDER,
                     help=i18n('check-args-opt'))
 views_parser = argparse.ArgumentParser(
@@ -21,6 +24,7 @@ views_parser.add_argument(
     '-t', '--table', nargs='?', metavar='days', const=7, type=int, default=1,
     help=i18n('check-table-opt'))
 views_parser.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
+
 stats_parser = argparse.ArgumentParser(
     prog='check stats', description=i18n('check-stats-desc'))
 stats_parser.add_argument('-n', '--stats', choices=[
@@ -28,8 +32,13 @@ stats_parser.add_argument('-n', '--stats', choices=[
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
 ], nargs='*', help=i18n('check-stat-opt'))
 
-completion = "-o nosort -W 'views stats -g --graph -o --output " \
-    "-t --table --csv -n --stats'"
+boosts_parser = argparse.ArgumentParser(
+    prog='check boosts', description=i18n('check-boosts-desc'))
+boosts_parser.add_argument('-t', '--type', choices=['advertisement'],
+                           help=i18n('check-type-opt'))
+
+completion = "-o nosort -W 'boosts stats views -g --graph -o --output " \
+    "-t --table --csv -n --stats -t --type'"
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
@@ -124,6 +133,26 @@ def stats(args: list[str], slot: SaveSlot):
     pi18n('check-stats-config')
     for key, value in config.items():
         pi18n(f'check-stats-key-{key}', value)
+
+def boost_list(args: list[Boost], slot: SaveSlot):
+    print('\n'.join(' ' + i18n('boost-desc', boost.boost(slot), boost.expires)
+                    for boost in args))
+
+def boosts(args: list[str], slot: SaveSlot):
+    cmdargs = boosts_parser.parse_args(args)
+    boosts: list[Boost] = slot.boosts[:]
+    typed: dict[str, list[Boost]]
+    if cmdargs.type is not None:
+        boosts = [boost for boost in boosts
+                  if boost.type == cmdargs.type]
+        boost_list(boosts, slot)
+    else:
+        typed = {}
+        for boost in boosts:
+            typed.setdefault(boost.type, []).append(boost)
+        for btype, boosts in typed.items():
+            print(i18n('boost-%s-name' % btype))
+            boost_list(boosts, slot)
 
 def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
