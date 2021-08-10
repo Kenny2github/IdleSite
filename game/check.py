@@ -2,12 +2,12 @@ import os
 import time
 import argparse
 from typing import Union
-from .slot import Boost, SaveSlot
+from .slot import Boost, CDNSetup, SaveSlot
 from .i18n import i18n, pi18n
 
 SUBCMDS = [
     'complete',
-    'boosts', 'stats', 'views'
+    'boosts', 'cdn', 'stats', 'transactions', 'views'
 ]
 
 parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
@@ -41,6 +41,12 @@ boosts_parser = argparse.ArgumentParser(
     prog='check boosts', description=i18n('check-boosts-desc'))
 boosts_parser.add_argument('-t', '--type', choices=BOOST_TYPES,
                            help=i18n('check-type-opt'))
+
+trans_parser = argparse.ArgumentParser(
+    prog='check transactions', description=i18n('check-trans-desc'))
+
+cdn_parser = argparse.ArgumentParser(
+    prog='check cdn', description=i18n('check-cdn-desc'))
 
 completion = "-o nosort -C 'check complete'"
 
@@ -214,6 +220,20 @@ def boosts(args: list[str], slot: SaveSlot):
         for btype, boosts in typed.items():
             print(i18n('boost-%s-name' % btype))
             boost_list(boosts, slot)
+
+def transactions(args: list[str], slot: SaveSlot):
+    trans_parser.parse_args(args)
+    digits = len(str(len(slot.transactions_pending)))
+    for i, trans in enumerate(slot.transactions_pending, 1):
+        print(str(i).zfill(digits), trans.description(slot), sep=')\t')
+
+def cdn(args: list[str], slot: SaveSlot):
+    cdn_parser.parse_args(args)
+    digits = len(str(len(slot.cdn_servers)))
+    for i, (lat, long) in enumerate(slot.cdn_servers, 1):
+        boost = CDNSetup(lat, long).boost(slot)
+        lat, long = CDNSetup.str_coords(lat, long, '%3d')
+        pi18n('check-cdn-line', str(i).zfill(digits), lat, long, boost)
 
 def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
