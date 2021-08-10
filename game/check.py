@@ -1,11 +1,13 @@
 import os
 import time
 import argparse
+from typing import Union
 from .slot import Boost, SaveSlot
 from .i18n import i18n, pi18n
 
 SUBCMDS = [
-    'views', 'stats', 'boosts'
+    'complete',
+    'boosts', 'stats', 'views'
 ]
 
 parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
@@ -25,22 +27,81 @@ views_parser.add_argument(
     help=i18n('check-table-opt'))
 views_parser.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
 
-stats_parser = argparse.ArgumentParser(
-    prog='check stats', description=i18n('check-stats-desc'))
-stats_parser.add_argument('-n', '--stats', choices=[
+STAT_TYPES = [
     'all', 'views', 'cumulative', 'money', 'boosts', 'pending',
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
-], nargs='*', help=i18n('check-stat-opt'))
+]
+stats_parser = argparse.ArgumentParser(
+    prog='check stats', description=i18n('check-stats-desc'))
+stats_parser.add_argument('-n', '--stats', choices=STAT_TYPES, nargs='*',
+                          help=i18n('check-stat-opt'))
 
+BOOST_TYPES = ['advertisement']
 boosts_parser = argparse.ArgumentParser(
     prog='check boosts', description=i18n('check-boosts-desc'))
-boosts_parser.add_argument('-t', '--type', choices=['advertisement'],
+boosts_parser.add_argument('-t', '--type', choices=BOOST_TYPES,
                            help=i18n('check-type-opt'))
 
-completion = "-o nosort -W 'boosts stats views -g --graph -o --output " \
-    "-t --table --csv -n --stats -t --type'"
+completion = "-o nosort -C 'check complete'"
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
+
+def get_complete_words() -> Union[int, list[str]]:
+    import re
+    point = int(os.environ['COMP_POINT'])
+    split = '[' + os.environ.get('COMP_WORDBREAKS', ' "\'@><=;|&(:') + ']'
+    words = re.split(split, os.environ['COMP_LINE'][:point])
+    wc = len(words)
+    subcmds = SUBCMDS[1:]
+    if not words or words[0] != 'check':
+        return 1
+    if wc == 1:
+        print('\n'.join(subcmds))
+        return 0
+    if wc == 2 and words[1] not in subcmds:
+        print('\n'.join(word for word in subcmds
+                        if word.startswith(words[1])))
+        return 0
+    if wc == 2:
+        words.append('')
+    return words
+
+def complete(args: list[str], slot: SaveSlot):
+    """Generate completions. Not intended for user use."""
+    if 'COMP_KEY' not in os.environ:
+        return 1
+    words = get_complete_words()
+    if isinstance(words, int):
+        return words
+    subcmd = words[1]
+    opts = []
+    test = words[-1]
+    if subcmd == 'boosts':
+        OPTS = '-t --type'.split()
+        if words[-2] in OPTS:
+            # check boosts -t/--type <complete, may be empty>
+            opts = BOOST_TYPES
+        else:
+            # check boosts [-t/--type advertisement] <complete>
+            opts = OPTS
+    elif subcmd == 'stats':
+        OPTS = '-n --stats'.split()
+        opts = OPTS
+        dashopts = [word for word in words if word.startswith('-')]
+        if words[-2] in OPTS:
+            opts = STAT_TYPES
+        elif dashopts and dashopts[-1] in OPTS:
+            # check stats -n/--stats ... <complete>
+            opts.extend(STAT_TYPES)
+    elif subcmd == 'views':
+        OPTS = '-g --graph -o --output -t --table --csv'.split()
+        OUTOPTS = '-o --output'.split()
+        if words[-2] in OUTOPTS:
+            # check views -o/--output <complete>
+            opts = [] # should autocomplete filenames, but idk how
+        else:
+            opts = OPTS
+    print('\n'.join(opt for opt in opts if opt.startswith(test)))
 
 def graph(days: int, slot: SaveSlot, outfile: str):
     try:
