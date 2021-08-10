@@ -119,18 +119,28 @@ class CDNSetup(Boost, metaclass=_JL):
     latitude: int # degrees north (+) / south (-)
     longitude: int # degrees east (+) / west (-)
 
+    @property
+    def coords(self) -> tuple[int, int]:
+        """The coordinates of this CDN server."""
+        return (self.latitude, self.longitude)
+
     expires = None
     K = 1
 
     def activate(self, slot: SaveSlot) -> None:
         slot.view_rate += self.boost(slot)
+        slot.cdn_servers.append(self.coords)
 
     def boost(self, slot: SaveSlot) -> int:
         # boost is proportional to minimum spherical orthogonal
         # distance between this new server and any other
+        if len(slot.cdn_servers) == 1 and slot.cdn_servers[0] == self.coords:
+            # no boost when this is the only server
+            return 0
         return self.K * min(
             abs(self.latitude - lat) + abs(self.longitude - long)
-            for lat, long in slot.cdn_servers)
+            for lat, long in slot.cdn_servers
+            if (lat, long) != self.coords)
 
     def cost(self, slot: SaveSlot) -> Decimal:
         # 540 is the maximum possible spherical orthogonal
