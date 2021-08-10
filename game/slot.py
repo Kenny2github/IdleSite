@@ -172,7 +172,8 @@ class SaveSlot(_JS, metaclass=_JL):
     transactions_pending: list[Transaction] = field(default_factory=list)
 
     # [(lat, long), (lat, long)]
-    cdn_servers: list[tuple[int, int]] = field(default_factory=list)
+    cdn_servers: list[tuple[int, int]] = field(
+        default_factory=lambda: [(41, 74)])
 
     money: Decimal = Decimal()
 
