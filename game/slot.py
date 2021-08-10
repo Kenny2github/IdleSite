@@ -234,7 +234,7 @@ class SaveSlot(_JS, metaclass=_JL):
                     cleared_transactions.append(transaction)
             self.transactions_pending = transactions_pending
             for transaction in cleared_transactions:
-                transaction.clear()
+                transaction.clear(self)
             # update views
             view_rate = self.view_rate + sum(
                 boost.boost(self) for boost in self.boosts)
