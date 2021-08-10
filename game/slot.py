@@ -91,6 +91,12 @@ class Boost(_JS):
         """The cost of this much of a view boost."""
         raise NotImplementedError
 
+    @property
+    def type(self) -> str:
+        """The type of boost. Equivalent to type(boost).__name__.casefold()."""
+        # apparently this is not an infinite recursion
+        return type(self).__name__.casefold()
+
 @dataclass
 class Advertisement(Boost, metaclass=_JL):
     expires: int # day number
