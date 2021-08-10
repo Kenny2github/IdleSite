@@ -28,7 +28,7 @@ views_parser.add_argument(
 views_parser.add_argument('--csv', action='store_true', help=i18n('check-csv-opt'))
 
 STAT_TYPES = [
-    'all', 'views', 'cumulative', 'money', 'boosts', 'pending',
+    'all', 'today', 'views', 'cumulative', 'money', 'boosts', 'pending',
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
 ]
 stats_parser = argparse.ArgumentParser(
