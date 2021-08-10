@@ -107,6 +107,9 @@ def complete(args: list[str], slot: SaveSlot):
             opts = [] # should autocomplete filenames, but idk how
         else:
             opts = OPTS
+    if len(words) == 3 and (test or '-').startswith('-'):
+        opts.insert(0, '-h')
+        opts.insert(1, '--help')
     print('\n'.join(opt for opt in opts if opt.startswith(test)))
 
 def graph(days: int, slot: SaveSlot, outfile: str):
