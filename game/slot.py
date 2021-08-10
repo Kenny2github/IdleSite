@@ -110,7 +110,7 @@ class Advertisement(Boost, metaclass=_JL):
 
     def cost(self, slot: SaveSlot) -> Decimal:
         """The cost of this much of a view boost for this long."""
-        return self.duration * self.boost(slot) \
+        return (self.expires - slot.today) * self.boost(slot) \
             * slot.difficulty_multiplier
 
 @dataclass
