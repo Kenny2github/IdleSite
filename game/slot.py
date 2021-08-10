@@ -91,6 +91,10 @@ class Boost(_JS):
         """The cost of this much of a view boost."""
         raise NotImplementedError
 
+    def description(self, slot: SaveSlot) -> str:
+        """Human-readable description of this boost."""
+        raise NotImplementedError
+
     @property
     def type(self) -> str:
         """The type of boost. Equivalent to type(boost).__name__.casefold()."""
@@ -112,6 +116,9 @@ class Advertisement(Boost, metaclass=_JL):
         """The cost of this much of a view boost for this long."""
         return (self.expires - slot.today) * self.boost(slot) \
             * slot.difficulty_multiplier
+
+    def description(self, slot: SaveSlot) -> str:
+        return i18n('advertisement-desc', self.power, self.expires)
 
 @dataclass
 class CDNSetup(Boost, metaclass=_JL):
@@ -148,6 +155,25 @@ class CDNSetup(Boost, metaclass=_JL):
         return (540 * self.K - self.boost(slot)) \
             * slot.difficulty_multiplier
 
+    def description(self, slot: SaveSlot) -> str:
+        return i18n('cdnsetup-desc', *self.str_coords(
+            *self.coords), self.boost(slot))
+
+    @staticmethod
+    def str_coords(lat: int, long: int, fmt: str = '%s') -> tuple[str, str]:
+        unit_lat = unit_long = '\N{DEGREE SIGN}'
+        if lat >= 0:
+            unit_lat += 'N'
+        else:
+            unit_lat += 'S'
+        if long >= 0:
+            unit_long += 'E'
+        else:
+            unit_long += 'W'
+        return (
+            (fmt + '%s') % (abs(lat), unit_lat),
+            (fmt + '%s') % (abs(long), unit_long))
+
 @dataclass
 class Transaction(_JS, metaclass=_JL):
     # day number on which the transaction clears
@@ -158,6 +184,10 @@ class Transaction(_JS, metaclass=_JL):
     def clear(self, slot: SaveSlot):
         self.action.activate(slot)
         slot.money -= self.action.cost(slot)
+
+    def description(self, slot: SaveSlot) -> str:
+        return i18n('transaction-desc',
+                    self.action.description(slot), self.clear_date)
 
 @dataclass
 class SaveSlot(_JS, metaclass=_JL):
