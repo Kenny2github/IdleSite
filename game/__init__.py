@@ -1,6 +1,8 @@
 import sys
 import os
+import re
 import json
+from typing import Optional, Callable
 from .i18n import i18n, pi18n
 from .slot import SaveSlot, _JL
 
@@ -57,3 +59,21 @@ def load_slot(slot: str) -> SaveSlot:
 def save_slot(slot: str, data: SaveSlot):
     with open('saves/%s' % slot, 'w') as slotfile:
         json.dump(data.serialize(data), slotfile)
+
+CCallback = Callable[[Optional[str], list[str]], list[str]]
+
+def dynamic_completion(subcmds: list[str], callback: CCallback):
+    if 'COMP_KEY' not in os.environ:
+        sys.exit('Missing COMP_KEY environment variable')
+    point = int(os.environ['COMP_POINT'])
+    split = '[' + os.environ.get('COMP_WORDBREAKS', ' "\'@><=;|&(:') + ']'
+    words = re.split(split, os.environ['COMP_LINE'][:point])
+    try:
+        subcmd = [word for word in words if word in subcmds][0]
+    except IndexError:
+        subcmd = None
+    if words[-1] == subcmd:
+        subcmd = None
+    opts = callback(subcmd, words)
+    print('\n'.join(opt for opt in opts if opt.startswith(words[-1])))
+    sys.exit(0)

@@ -1,7 +1,8 @@
 import os
 import time
 import argparse
-from typing import Union
+from typing import Optional
+from . import dynamic_completion
 from .slot import Boost, CDNSetup, SaveSlot
 from .i18n import i18n, pi18n
 
@@ -47,72 +48,45 @@ trans_parser = subparsers.add_parser(
 cdn_parser = subparsers.add_parser(
     'cdn', description=i18n('check-cdn-desc'))
 
-complete_parser = subparsers.add_parser('complete')
-complete_parser.add_argument('args', nargs=argparse.REMAINDER)
-
 completion = "-o nosort -C 'check complete'"
 
 TIME_FMT = '%Y-%m-%d %H:%M:%S (UTC)'
 
-def get_complete_words() -> Union[int, list[str]]:
-    import re
-    point = int(os.environ['COMP_POINT'])
-    split = '[' + os.environ.get('COMP_WORDBREAKS', ' "\'@><=;|&(:') + ']'
-    words = re.split(split, os.environ['COMP_LINE'][:point])
-    wc = len(words)
-    subcmds = SUBCMDS[1:]
-    if not words or words[0] != 'check':
-        return 1
-    if wc == 1:
-        print('\n'.join(subcmds))
-        return 0
-    if wc == 2 and words[1] not in subcmds:
-        print('\n'.join(word for word in subcmds
-                        if word.startswith(words[1])))
-        return 0
-    if wc == 2:
-        words.append('')
-    return words
-
-def complete(cmdargs: argparse.Namespace, slot: SaveSlot):
-    """Generate completions. Not intended for user use."""
-    if 'COMP_KEY' not in os.environ:
-        return 1
-    words = get_complete_words()
-    if isinstance(words, int):
-        return words
-    subcmd = words[1]
-    opts = []
-    test = words[-1]
+def complete_callback(subcmd: Optional[str], words: list[str]) -> list[str]:
+    if subcmd is None:
+        return ['-h', '--help'] + SUBCMDS[1:]
     if subcmd == 'boosts':
         OPTS = '-t --type'.split()
         if words[-2] in OPTS:
             # check boosts -t/--type <complete, may be empty>
-            opts = BOOST_TYPES
-        else:
-            # check boosts [-t/--type advertisement] <complete>
-            opts = OPTS
-    elif subcmd == 'stats':
+            return BOOST_TYPES
+        if set(OPTS) & set(words[:-1]):
+            return []
+        # check boosts [-t/--type advertisement] <complete>
+        return OPTS
+    if subcmd == 'stats':
         OPTS = '-n --stats'.split()
-        opts = OPTS
-        dashopts = [word for word in words if word.startswith('-')]
-        if words[-2] in OPTS:
-            opts = STAT_TYPES
-        elif dashopts and dashopts[-1] in OPTS:
-            # check stats -n/--stats ... <complete>
-            opts.extend(STAT_TYPES)
-    elif subcmd == 'views':
+        if set(OPTS) & set(words[:-1]):
+            if 'all' in words[:-1]:
+                return []
+            return [t for t in STAT_TYPES if t not in words[:-1]]
+        return OPTS
+    if subcmd == 'views':
         OPTS = '-g --graph -o --output -t --table --csv'.split()
-        OUTOPTS = '-o --output'.split()
-        if words[-2] in OUTOPTS:
+        if words[-2] in OPTS[2:4]:
             # check views -o/--output <complete>
-            opts = [] # should autocomplete filenames, but idk how
-        else:
-            opts = OPTS
-    if len(words) == 3 and (test or '-').startswith('-'):
-        opts.insert(0, '-h')
-        opts.insert(1, '--help')
-    print('\n'.join(opt for opt in opts if opt.startswith(test)))
+            return [] # should autocomplete filenames, but idk how
+        opts = []
+        if not (set(OPTS[:2]) & set(words[:-1])):
+            opts.extend(OPTS[:2])
+        if not (set(OPTS[2:4]) & set(words[:-1])):
+            opts.extend(OPTS[2:4])
+        if not (set(OPTS[4:6]) & set(words[:-1])):
+            opts.extend(OPTS[4:6])
+        if OPTS[-1] not in words[:-1]:
+            opts.append(OPTS[-1])
+        return opts
+    return []
 
 def graph(days: int, slot: SaveSlot, outfile: str):
     try:
@@ -236,5 +210,7 @@ def cdn(cmdargs: argparse.Namespace, slot: SaveSlot):
         pi18n('check-cdn-line', str(i).zfill(digits), lat, long, boost)
 
 def main(args: list[str], slot: SaveSlot):
+    if 'complete' in args:
+        dynamic_completion(SUBCMDS[1:], complete_callback)
     cmdargs = parser.parse_args(args[1:])
     return globals()[cmdargs.cmd](cmdargs, slot)
