@@ -11,7 +11,7 @@ SUBCMDS = [
 ]
 
 parser = argparse.ArgumentParser(description=i18n('check-desc'))
-subparsers = parser.add_subparsers(dest='cmd')
+subparsers = parser.add_subparsers(dest='cmd', required=True)
 
 views_parser = subparsers.add_parser(
     'views', description=i18n('check-views-desc'))
@@ -237,6 +237,4 @@ def cdn(cmdargs: argparse.Namespace, slot: SaveSlot):
 
 def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
-    if cmdargs.cmd is None:
-        parser.error('cannot invoke check on its own')
     return globals()[cmdargs.cmd](cmdargs, slot)
