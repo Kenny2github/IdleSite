@@ -10,12 +10,11 @@ SUBCMDS = [
     'boosts', 'cdn', 'stats', 'transactions', 'views'
 ]
 
-parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
-parser.add_argument('value', choices=SUBCMDS, help=i18n('check-value-opt'))
-parser.add_argument('args', nargs=argparse.REMAINDER,
-                    help=i18n('check-args-opt'))
-views_parser = argparse.ArgumentParser(
-    prog='check views', description=i18n('check-views-desc'))
+parser = argparse.ArgumentParser(description=i18n('check-desc'))
+subparsers = parser.add_subparsers(dest='cmd')
+
+views_parser = subparsers.add_parser(
+    'views', description=i18n('check-views-desc'))
 views_parser.add_argument(
     '-g', '--graph', nargs='?', metavar='days', const=7, type=int,
     help=i18n('check-graph-opt'))
@@ -31,22 +30,25 @@ STAT_TYPES = [
     'all', 'today', 'views', 'cumulative', 'money', 'boosts', 'pending',
     'cdn', 'friends', 'promos', 'difficulty', 'day', 'ctime', 'mtime'
 ]
-stats_parser = argparse.ArgumentParser(
-    prog='check stats', description=i18n('check-stats-desc'))
+stats_parser = subparsers.add_parser(
+    'stats', description=i18n('check-stats-desc'))
 stats_parser.add_argument('-n', '--stats', choices=STAT_TYPES, nargs='*',
                           help=i18n('check-stat-opt'))
 
 BOOST_TYPES = ['advertisement']
-boosts_parser = argparse.ArgumentParser(
-    prog='check boosts', description=i18n('check-boosts-desc'))
+boosts_parser = subparsers.add_parser(
+    'boosts', description=i18n('check-boosts-desc'))
 boosts_parser.add_argument('-t', '--type', choices=BOOST_TYPES,
                            help=i18n('check-type-opt'))
 
-trans_parser = argparse.ArgumentParser(
-    prog='check transactions', description=i18n('check-trans-desc'))
+trans_parser = subparsers.add_parser(
+    'transactions', description=i18n('check-trans-desc'))
 
-cdn_parser = argparse.ArgumentParser(
-    prog='check cdn', description=i18n('check-cdn-desc'))
+cdn_parser = subparsers.add_parser(
+    'cdn', description=i18n('check-cdn-desc'))
+
+complete_parser = subparsers.add_parser('complete')
+complete_parser.add_argument('args', nargs=argparse.REMAINDER)
 
 completion = "-o nosort -C 'check complete'"
 
@@ -72,7 +74,7 @@ def get_complete_words() -> Union[int, list[str]]:
         words.append('')
     return words
 
-def complete(args: list[str], slot: SaveSlot):
+def complete(cmdargs: argparse.Namespace, slot: SaveSlot):
     """Generate completions. Not intended for user use."""
     if 'COMP_KEY' not in os.environ:
         return 1
@@ -142,8 +144,7 @@ def graph(days: int, slot: SaveSlot, outfile: str):
     fig.savefig(fname, bbox_inches='tight')
     pi18n('check-views-fig-saved', fname)
 
-def views(args: list[str], slot: SaveSlot):
-    cmdargs = views_parser.parse_args(args)
+def views(cmdargs: argparse.Namespace, slot: SaveSlot):
     if cmdargs.graph is not None:
         graph(cmdargs.graph, slot, cmdargs.output)
     if cmdargs.csv:
@@ -165,8 +166,7 @@ def views(args: list[str], slot: SaveSlot):
             break
         print(day, views, cumulative, sep=sep)
 
-def stats(args: list[str], slot: SaveSlot):
-    cmdargs = stats_parser.parse_args(args)
+def stats(cmdargs: argparse.Namespace, slot: SaveSlot):
     data = {
         'today': slot.today,
         'views': slot.views_today,
@@ -208,8 +208,7 @@ def boost_list(args: list[Boost], slot: SaveSlot):
     print('\n'.join(' ' + i18n('boost-desc', boost.boost(slot), boost.expires)
                     for boost in args))
 
-def boosts(args: list[str], slot: SaveSlot):
-    cmdargs = boosts_parser.parse_args(args)
+def boosts(cmdargs: argparse.Namespace, slot: SaveSlot):
     boosts: list[Boost] = slot.boosts[:]
     typed: dict[str, list[Boost]]
     if cmdargs.type is not None:
@@ -224,14 +223,12 @@ def boosts(args: list[str], slot: SaveSlot):
             print(i18n('boost-%s-name' % btype))
             boost_list(boosts, slot)
 
-def transactions(args: list[str], slot: SaveSlot):
-    trans_parser.parse_args(args)
+def transactions(cmdargs: argparse.Namespace, slot: SaveSlot):
     digits = len(str(len(slot.transactions_pending)))
     for i, trans in enumerate(slot.transactions_pending, 1):
         print(str(i).zfill(digits), trans.description(slot), sep=')\t')
 
-def cdn(args: list[str], slot: SaveSlot):
-    cdn_parser.parse_args(args)
+def cdn(cmdargs: argparse.Namespace, slot: SaveSlot):
     digits = len(str(len(slot.cdn_servers)))
     for i, (lat, long) in enumerate(slot.cdn_servers, 1):
         boost = CDNSetup(lat, long).boost(slot)
@@ -240,4 +237,6 @@ def cdn(args: list[str], slot: SaveSlot):
 
 def main(args: list[str], slot: SaveSlot):
     cmdargs = parser.parse_args(args[1:])
-    return globals()[cmdargs.value](cmdargs.args, slot)
+    if cmdargs.cmd is None:
+        parser.error('cannot invoke check on its own')
+    return globals()[cmdargs.cmd](cmdargs, slot)
