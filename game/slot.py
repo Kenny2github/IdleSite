@@ -186,8 +186,8 @@ class Transaction(_JS, metaclass=_JL):
         slot.money -= self.action.cost(slot)
 
     def description(self, slot: SaveSlot) -> str:
-        return i18n('transaction-desc',
-                    self.action.description(slot), self.clear_date)
+        return i18n('transaction-desc', self.action.description(slot),
+                    self.clear_date, self.action.cost(slot))
 
 @dataclass
 class SaveSlot(_JS, metaclass=_JL):

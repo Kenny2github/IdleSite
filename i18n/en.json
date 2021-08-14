@@ -55,6 +55,6 @@
 	"boost-desc": "{0} views/day, expires on day #{1}",
 	"advertisement-desc": "Advertisement: {0} views/day, expires on day #{1}",
 	"cdnsetup-desc": "CDN setup: at {0}, {1}; effective {2} views/day",
-	"transaction-desc": "{0};\tclears on day #{1}",
+	"transaction-desc": "{0};\tclears on day #{1}\tfor ${2}",
 	"lang-name": "English"
 }
