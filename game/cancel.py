@@ -1,5 +1,5 @@
 import argparse
-from game.slot import SaveSlot
+from .slot import SaveSlot
 from .i18n import i18n
 
 TYPES = {
