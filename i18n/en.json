@@ -47,7 +47,7 @@
 	"check-views-key-cumulative": "Cumulative",
 	"check-views-fig-saved": "Saved graph to '{0}'",
 	"check-views-needs-matplotlib": "matplotlib is required for --graph to function. Install with `python3 -m pip install -U matplotlib`",
-	"check-cdn-line": "{0}) {0}, {0}: effective {0} views/day",
+	"check-cdn-line": "{0}) {1}, {2}: effective {3} views/day",
 	"boost-advertisement-name": "Advertisements:",
 	"boost-desc": "{0} views/day, expires on day #{1}",
 	"advertisement-desc": "Advertisement: {0} views/day, expires on day #{1}",
