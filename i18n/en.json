@@ -68,5 +68,6 @@
 	"advertisement-desc": "Advertisement: {0} views/day, expires on day #{1}",
 	"cdnsetup-desc": "CDN setup: at {0}, {1}; effective {2} views/day",
 	"transaction-desc": "{0};\tclears on day #{1}\tfor ${2}",
+	"transaction-not-cleared": "Warning: Transaction #{0} was not cleared due to a lack of funds. It will be cleared when funds are sufficient.",
 	"lang-name": "English"
 }

@@ -3,7 +3,7 @@ from time import time
 import math
 from decimal import Decimal
 from dataclasses import dataclass, field
-from .i18n import i18n
+from .i18n import i18n, pi18n
 
 class _JL(type):
     """Metaclass that enables a class to be loaded from JSON."""
@@ -249,6 +249,7 @@ class SaveSlot(_JS, metaclass=_JL):
         day_number = (self.last_touch - self.first_touch) // self.day_length
         if len(self.views) != old_day_number:
             raise RuntimeError(i18n('wrong-view-day-count'))
+        warned_trans = []
         for day in range(old_day_number+1, day_number+1):
             # expire boosts
             self.boosts = [boost for boost in self.boosts
@@ -257,11 +258,18 @@ class SaveSlot(_JS, metaclass=_JL):
             # clear transactions
             transactions_pending: list[Transaction] = []
             cleared_transactions: list[Transaction] = []
+            money = self.money
             for transaction in self.transactions_pending:
+                cost = transaction.action.cost(self)
                 if transaction.clear_date > day:
                     transactions_pending.append(transaction)
-                else:
+                elif cost <= money:
                     cleared_transactions.append(transaction)
+                    money -= cost
+                else:
+                    if transaction not in warned_trans:
+                        warned_trans.append(transaction)
+                    transactions_pending.append(transaction)
             self.transactions_pending = transactions_pending
             for transaction in cleared_transactions:
                 transaction.clear(self)
@@ -276,3 +284,6 @@ class SaveSlot(_JS, metaclass=_JL):
                     view_rate, self.views[-1][-1] + view_rate))
             else:
                 self.views.append((view_rate, view_rate))
+        for transaction in warned_trans:
+            pi18n('transaction-not-cleared',
+                  self.transactions_pending.index(transaction) + 1)
