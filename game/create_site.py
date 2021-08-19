@@ -27,7 +27,7 @@ completion = "-o nosort -W '-d --difficulty -t --day-length " \
     "-s --save-slot -f --force-overwrite -I --non-interactive'"
 no_load_slot = True
 
-def main(args: list[str]) -> int:
+def main(args: list[str], slot: None = None) -> int:
     cmdargs = parser.parse_args(args[1:])
     slot = cmdargs.slot
     if not slot and not cmdargs.interactive:
