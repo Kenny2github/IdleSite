@@ -63,6 +63,8 @@
 	"buy-cdn-desc": "Buy a CDN server.",
 	"buy-lat-opt": "The integer-degree latitude of the new server. North is +ve and South is -ve.",
 	"buy-long-opt": "The integer-degree longitude of the new server. East is +ve and West is -ve.",
+	"game-help-desc": "Show this help.",
+	"game-help-cmd-opt": "The command to get help for (equivalent to `<cmd> --help`). If unspecified, lists commands and their descriptions.",
 	"boost-advertisement-name": "Advertisements:",
 	"boost-desc": "{0} views/day, expires on day #{1}",
 	"advertisement-desc": "Advertisement: {0} views/day, expires on day #{1}",

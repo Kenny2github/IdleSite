@@ -3,7 +3,8 @@ from .slot import SaveSlot
 
 choices = ['hi', 'hello', 'hey']
 
-parser = argparse.ArgumentParser(description='Hello World!')
+parser = argparse.ArgumentParser(
+    prog='hello', description='Hello World!')
 parser.add_argument('word', nargs='?', choices=choices,
                     help='The greeting word')
 

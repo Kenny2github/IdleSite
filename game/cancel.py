@@ -6,7 +6,8 @@ TYPES = {
     'transaction': 'transactions_pending',
 }
 
-parser = argparse.ArgumentParser(description=i18n('cancel-desc'))
+parser = argparse.ArgumentParser(
+    prog='cancel', description=i18n('cancel-desc'))
 parser.add_argument('type', choices=list(TYPES.keys()),
                     help=i18n('cancel-type-opt'))
 parser.add_argument('indexes', nargs='+', type=int, metavar='index',

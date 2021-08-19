@@ -1,8 +1,8 @@
 import sys
 import os
-import importlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from game import import_game
 
 # not using argparse here because there's no good way to use
 # argparse.REMAINDER *and* allow --completion and --save-slot
@@ -15,14 +15,13 @@ if len(sys.argv) < 2:
 del sys.argv[0]
 
 command = sys.argv[0]
+completion = False
 if '--completion' in sys.argv:
     completion = True
     sys.argv.remove('--completion')
-else:
-    completion = False
 
 try:
-    game = importlib.import_module('game.' + command.replace('-', '_'))
+    game = import_game(command)
 except ImportError:
     raise SystemExit('game: error: invalid command %r' % command) from None
 else:

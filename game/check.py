@@ -11,7 +11,7 @@ SUBCMDS = [
     'boosts', 'cdn', 'stats', 'transactions', 'views'
 ]
 
-parser = argparse.ArgumentParser(description=i18n('check-desc'))
+parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
 subparsers = parser.add_subparsers(dest='cmd', required=True)
 
 views_parser = subparsers.add_parser(

@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import json
+import importlib
 from typing import Optional, Callable
 from .i18n import i18n, pi18n
 from .slot import SaveSlot, _JL
@@ -77,3 +78,6 @@ def dynamic_completion(subcmds: list[str], callback: CCallback):
     opts = callback(subcmd, words)
     print('\n'.join(opt for opt in opts if opt.startswith(words[-1])))
     sys.exit(0)
+
+def import_game(name: str):
+    return importlib.import_module('game.' + name.replace('-', '_'))

@@ -4,7 +4,7 @@ from . import dynamic_completion
 from .slot import Advertisement, Boost, CDNSetup, SaveSlot, Transaction
 from .i18n import i18n
 
-parser = argparse.ArgumentParser(description=i18n('buy-desc'))
+parser = argparse.ArgumentParser(prog='buy', description=i18n('buy-desc'))
 clear = parser.add_mutually_exclusive_group()
 clear.add_argument('-c', '--clear-after', type=int, default=5, metavar='days',
                    help=i18n('buy-clear-after-opt'))
