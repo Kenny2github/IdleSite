@@ -1,4 +1,5 @@
 {
+	"start": "Welcome to IdleSite!\nThe object of the game is to make it to 8 billion (cumulative) views.\nRun `game-help` to see a list of available commands.\nRun `create-site` to get started.\nRun `check stats` to see statistics about your site at any point.",
 	"creating-slot": "Creating slot '{0}'...",
 	"no-save-slots": "You do not have any existing save slots. Slot '{0}' will now be created for you.",
 	"one-save-slot": "You do not have any save slot currently in use. Slot '{0}' has been automatically selected since it is your only existing slot.",
@@ -63,7 +64,7 @@
 	"buy-cdn-desc": "Buy a CDN server.",
 	"buy-lat-opt": "The integer-degree latitude of the new server. North is +ve and South is -ve.",
 	"buy-long-opt": "The integer-degree longitude of the new server. East is +ve and West is -ve.",
-	"game-help-desc": "Show this help.",
+	"start-desc": "Display the intro to the game.",
 	"game-help-cmd-opt": "The command to get help for (equivalent to `<cmd> --help`). If unspecified, lists commands and their descriptions.",
 	"boost-advertisement-name": "Advertisements:",
 	"boost-desc": "{0} views/day, expires on day #{1}",
