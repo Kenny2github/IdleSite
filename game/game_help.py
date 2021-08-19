@@ -1,7 +1,7 @@
 import os
 import argparse
 from . import import_game
-from .i18n import i18n
+from .i18n import i18n, pi18n
 
 CMDS = [name for name in os.listdir('commands') if '.' not in name]
 
@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('cmd', nargs='?', default=None, choices=CMDS,
                     help=i18n('game-help-cmd-opt'))
 
-completion = "-W ''"
+completion = f"-W '{' '.join(CMDS)}'"
 no_load_slot = True
 
 def main(args: list[str], slot: None = None):
@@ -21,6 +21,7 @@ def main(args: list[str], slot: None = None):
         game = import_game(cmdargs.cmd)
         return game.main([cmdargs.cmd, '--help'], None)
     width = max(map(len, CMDS))
+    pi18n('game-help')
     for name in CMDS:
         game = import_game(name)
-        print(name.ljust(width), game.parser.description)
+        print(' ', name.ljust(width), game.parser.description)
