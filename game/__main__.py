@@ -30,8 +30,8 @@ else:
         sys.exit('game: error: invalid command %r' % command)
     if completion:
         print(game.completion)
-    elif command.startswith('create'):
-        # special behavior for "create site"
+    elif hasattr(game, 'no_load_slot'):
+        # some commands need to not load save slots initially
         sys.exit(game.main(sys.argv) or 0)
     else:
         from game import get_slot, load_slot, save_slot
