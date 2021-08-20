@@ -5,6 +5,8 @@ from decimal import Decimal
 from dataclasses import dataclass, field
 from .i18n import i18n, pi18n
 
+END = 8_000_000_000
+
 class _JL(type):
     """Metaclass that enables a class to be loaded from JSON."""
 
@@ -215,6 +217,8 @@ class SaveSlot(_JS, metaclass=_JL):
     first_touch: int = field(default_factory=lambda: int(time()))
     last_touch: int = field(default_factory=lambda: int(time()))
 
+    continued: bool = False
+
     @property
     def friends_available(self) -> int:
         """The number of friends available to advertise to."""
@@ -287,3 +291,19 @@ class SaveSlot(_JS, metaclass=_JL):
         for transaction in warned_trans:
             pi18n('transaction-not-cleared',
                   self.transactions_pending.index(transaction) + 1)
+        if self.views_total >= END and not self.continued:
+            pi18n('game-won', self.views_total, self.today)
+            conf = input(i18n('game-continue'))
+            if conf[0].casefold() != 'y':
+                pi18n('game-done')
+                with open('saves/.current', 'w'):
+                    # wipe the "current" pointer.
+                    # if this was their only save, trying to use it
+                    # will at least still show a warning that it is
+                    # being selected.
+                    # otherwise, they will have to choose or create a save,
+                    # and hopefully not choose this one again.
+                    pass
+                raise SystemExit(1)
+            pi18n('game-continued')
+            self.continued = True
