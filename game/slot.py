@@ -1,11 +1,17 @@
 from __future__ import annotations
 from time import time
 import math
+import json
 from decimal import Decimal
 from dataclasses import dataclass, field
 from .i18n import i18n, pi18n
 
 END = 8_000_000_000
+
+with open('brightness.json') as f:
+    BRIGHTNESS: list[list[Decimal]] = json.load(f, parse_float=Decimal)
+with open('cubic_population.json') as f:
+    POPULATION: list[list[Decimal]] = json.load(f, parse_float=Decimal)
 
 class _JL(type):
     """Metaclass that enables a class to be loaded from JSON."""
@@ -134,28 +140,36 @@ class CDNSetup(Boost, metaclass=_JL):
         return (self.latitude, self.longitude)
 
     expires = None
-    K = 1
+    K = 10
+    RADIUS = 1
 
     def activate(self, slot: SaveSlot) -> None:
         slot.view_rate += self.boost(slot)
         slot.cdn_servers.append(self.coords)
 
     def boost(self, slot: SaveSlot) -> int:
-        # boost is proportional to minimum spherical orthogonal
-        # distance between this new server and any other
-        if len(slot.cdn_servers) == 1 and slot.cdn_servers[0] == self.coords:
-            # no boost when this is the only server
-            return 0
-        return self.K * min(
-            abs(self.latitude - lat) + abs(self.longitude - long)
-            for lat, long in slot.cdn_servers
-            if (lat, long) != self.coords)
+        # boost is (VERY LOOSELY) proportional to "brightness" at server
+        # BRIGHTNESS[latitude][longitude] = sum(
+        #     POPULATION[lat][long] / (squared distance or 1)
+        #     for every lat and long) for every latitude and longitude
+        # precomputed into brightness.json
+        return round(BRIGHTNESS[
+            90 - self.latitude][180 + self.longitude])
 
     def cost(self, slot: SaveSlot) -> Decimal:
-        # 540 is the maximum possible spherical orthogonal
-        # distance between any two points
-        return (540 * self.K - self.boost(slot)) \
-            * slot.difficulty_multiplier
+        # cost is (VERY LOOSELY) proportional to 3rt(population) around server
+        # cube roots of populations at int degrees in cubic_population.json
+        total = Decimal()
+        for i in range(-self.RADIUS, self.RADIUS + 1):
+            for j in range(-self.RADIUS, self.RADIUS + 1):
+                lat = 90 - self.latitude + i
+                long = 180 + self.longitude + j
+                try:
+                    total += POPULATION[lat][long]
+                except IndexError:
+                    pass
+        return self.K * (total * slot.difficulty_multiplier
+                         + Decimal(self.K) / (total or 1))
 
     def description(self, slot: SaveSlot) -> str:
         return i18n('cdnsetup-desc', *self.str_coords(
@@ -204,8 +218,7 @@ class SaveSlot(_JS, metaclass=_JL):
     transactions_pending: list[Transaction] = field(default_factory=list)
 
     # [(lat, long), (lat, long)]
-    cdn_servers: list[tuple[int, int]] = field(
-        default_factory=lambda: [(41, 74)])
+    cdn_servers: list[tuple[int, int]] = field(default_factory=list)
 
     money: Decimal = Decimal()
 
@@ -222,7 +235,7 @@ class SaveSlot(_JS, metaclass=_JL):
     @property
     def friends_available(self) -> int:
         """The number of friends available to advertise to."""
-        return int(100 * self.difficulty_multiplier)
+        return int(100 / self.difficulty_multiplier)
     @property
     def promo_available(self) -> int:
         """The number of self-promo channels available to advertise to."""
