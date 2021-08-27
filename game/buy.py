@@ -12,7 +12,8 @@ clear.add_argument('-o', '--clear-on', type=int, default=None, metavar='day',
                    help=i18n('buy-clear-on-opt'))
 parser.add_argument('-q', '--quote', action='store_true',
                    help=i18n('buy-quote-opt'))
-subparsers = parser.add_subparsers(dest='cmd', required=True)
+subparsers = parser.add_subparsers(
+    dest='cmd', required=True, title=i18n('subcommands'))
 
 ads_parser = subparsers.add_parser(
     'advertisement', description=i18n('buy-advertisement-desc'))

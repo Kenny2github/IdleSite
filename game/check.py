@@ -12,7 +12,8 @@ SUBCMDS = [
 ]
 
 parser = argparse.ArgumentParser(prog='check', description=i18n('check-desc'))
-subparsers = parser.add_subparsers(dest='cmd', required=True)
+subparsers = parser.add_subparsers(
+    dest='cmd', required=True, title=i18n('subcommands'))
 
 views_parser = subparsers.add_parser(
     'views', description=i18n('check-views-desc'))
