@@ -194,6 +194,48 @@ class CDNSetup(Boost, metaclass=_JL):
             (fmt + '%s') % (abs(long), unit_long))
 
 @dataclass
+class Friends(Boost, metaclass=_JL):
+    count: int # number of friends advertised to
+    expires: int = 1 # set by activate() to the following day
+
+    def activate(self, slot: SaveSlot) -> None:
+        self.expires = slot.today + 1
+        slot.boosts.append(self)
+        slot.friends_pinged += self.count
+
+    def boost(self, slot: SaveSlot) -> int:
+        return self.count
+
+    def cost(self, slot: SaveSlot) -> Decimal:
+        return Decimal()
+
+    def description(self, slot: SaveSlot) -> str:
+        return i18n('friends-desc', self.count)
+
+@dataclass
+class Channels(Boost, metaclass=_JL):
+    count: int # number of channels advertised to
+    started: int = 0 # when the promotion was made, set by activate()
+    expires = None
+    K = Decimal('0.5') # assume 1/every 2 people who see a self-promo click it
+
+    def activate(self, slot: SaveSlot) -> None:
+        self.started = slot.today
+        slot.boosts.append(self)
+        slot.promos_used += self.count
+
+    def boost(self, slot: SaveSlot) -> int:
+        # exponentially decay views gained over time
+        return int(slot.difficulty_multiplier * self.count * Decimal(
+            slot.today - self.started).exp() * self.K)
+
+    def cost(self, slot: SaveSlot) -> Decimal:
+        return Decimal()
+
+    def description(self, slot: SaveSlot) -> str:
+        return i18n('channels-desc', self.count, self.started)
+
+@dataclass
 class Transaction(_JS, metaclass=_JL):
     # day number on which the transaction clears
     clear_date: int

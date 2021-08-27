@@ -179,9 +179,13 @@ def stats(cmdargs: argparse.Namespace, slot: SaveSlot):
     for key, value in config.items():
         pi18n(f'check-stats-key-{key}', value)
 
+def boost_desc(boost: Boost, slot: SaveSlot):
+    if boost.expires is None:
+        return boost.description(slot)
+    return i18n('boost-desc', boost.boost(slot), boost.expires)
+
 def boost_list(args: list[Boost], slot: SaveSlot):
-    print('\n'.join(' ' + i18n('boost-desc', boost.boost(slot), boost.expires)
-                    for boost in args))
+    print('\n'.join(' ' + boost_desc(boost, slot) for boost in args))
 
 def boosts(cmdargs: argparse.Namespace, slot: SaveSlot):
     boosts: list[Boost] = slot.boosts[:]
