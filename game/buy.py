@@ -68,20 +68,20 @@ def advertisement(cmdargs: argparse.Namespace, slot: SaveSlot) -> Boost:
     else:
         expires = slot.today + cmdargs.expires
     if expires <= slot.today:
-        ads_parser.error('expiry is on or before today')
+        ads_parser.error(i18n('error-ads-expiry'))
     if cmdargs.fraction is not None:
         power = slot.views_today * cmdargs.fraction
     else:
         power = cmdargs.power
     if power <= 0:
-        ads_parser.error('power is non-positive')
+        ads_parser.error(i18n('error-ads-power'))
     return Advertisement(expires=expires, power=power)
 
 def cdn(cmdargs: argparse.Namespace, slot: SaveSlot) -> CDNSetup:
     if not (-90 <= cmdargs.lat <= 90):
-        cdn_parser.error('latitude out of range [-90, +90]')
+        cdn_parser.error(i18n('error-lat-oor'))
     if not (-180 <= cmdargs.long <= 180):
-        cdn_parser.error('longitude out of range [-180, +180]')
+        cdn_parser.error(i18n('error-long-oor'))
     return CDNSetup(cmdargs.lat, cmdargs.long)
 
 def main(args: list[str], slot: SaveSlot):

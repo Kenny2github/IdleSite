@@ -33,11 +33,11 @@ no_load_slot = True
 def main(args: list[str], slot: None = None) -> int:
     cmdargs = parser.parse_args(args[1:])
     if not (0 <= cmdargs.ad_proportion <= 1):
-        parser.error('ad proportion must be in range [0, 1]')
+        parser.error(i18n('error-proportion-oor'))
     if cmdargs.difficulty <= 0:
-        parser.error('difficulty must be strictly positive')
+        parser.error(i18n('error-difficulty-oor'))
     if cmdargs.day_length <= 0:
-        parser.error('day length must be strictly positive')
+        parser.error(i18n('error-day-length-oor'))
     slot = cmdargs.slot
     if not slot and not cmdargs.interactive:
         return 1

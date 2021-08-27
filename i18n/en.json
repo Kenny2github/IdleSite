@@ -99,5 +99,16 @@
 	"game-continue": "However, if you really want to continue, you can. Do you wish to? (y/n) ",
 	"game-done": "Congratulations once more then! You've done it. Thank you very much for playing.\n\tIdleSite created by AbyxDev - https://abyx.dev\n",
 	"game-continued": "So be it. Have fun entertaining the aliens. Who knows how many views you'll get out of them?\n\tIdleSite created by AbyxDev - https://abyx.dev\n",
+	"error-save-slot": "--save-slot option requires an argument",
+	"error-ads-expiry": "expiry is on or before today",
+	"error-ads-power": "power must be strictly positive",
+	"error-lat-oor": "latitude must be in range [-90, +90]",
+	"error-long-oor": "longitude out of range [-180, +180]",
+	"error-proportion-oor": "ad proportion must be in range [0, 1]",
+	"error-difficulty-oor": "difficulty must be strictly positive",
+	"error-day-length-oor": "day length must be strictly positive",
+	"error-count-oor": "count must be strictly positive",
+	"error-not-enough-friends": "not enough friends left",
+	"error-not-enough-channels": "not enough channels left",
 	"lang-name": "English"
 }

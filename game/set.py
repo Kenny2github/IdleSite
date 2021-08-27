@@ -26,7 +26,7 @@ def ads(cmdargs: argparse.Namespace, slot: SaveSlot):
         print(slot.ad_proportion)
         return
     if not (0 <= cmdargs.proportion <= 1):
-        ads_parser.error('proportion out of range [0, 1]')
+        ads_parser.error(i18n('error-proportion-oor'))
     slot.ad_proportion = cmdargs.proportion
 
 def difficulty(cmdargs: argparse.Namespace, slot: SaveSlot):
@@ -34,7 +34,7 @@ def difficulty(cmdargs: argparse.Namespace, slot: SaveSlot):
         print(slot.difficulty_multiplier)
         return
     if cmdargs.multiplier <= 0:
-        difficulty_parser.error('multiplier must be strictly positive')
+        difficulty_parser.error(i18n('error-difficulty-oor'))
     slot.difficulty_multiplier = cmdargs.multiplier
 
 def main(args: list[str], slot: SaveSlot):

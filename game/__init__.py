@@ -22,7 +22,7 @@ def get_slot(argv: list[str]) -> str:
             slot = argv[idx] # argument value shifted left
             del argv[idx] # pop argument value after reading
         except IndexError:
-            sys.exit('--save-slot option requires an argument')
+            sys.exit(i18n('error-save-slot'))
     return slot
 
 
@@ -65,6 +65,7 @@ CCallback = Callable[[Optional[str], list[str]], list[str]]
 
 def dynamic_completion(subcmds: list[str], callback: CCallback):
     if 'COMP_KEY' not in os.environ:
+        # untranslated: should not be encountered by regular users
         sys.exit('Missing COMP_KEY environment variable')
     point = int(os.environ['COMP_POINT'])
     split = '[' + os.environ.get('COMP_WORDBREAKS', ' "\'@><=;|&(:') + ']'

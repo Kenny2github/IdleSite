@@ -25,9 +25,9 @@ def friends(cmdargs: argparse.Namespace, slot: SaveSlot):
         print(f'{slot.friends_pinged}/{slot.friends_available}')
         return
     if cmdargs.count <= 0:
-        friends_parser.error('count must be strictly positive')
+        friends_parser.error(i18n('error-count-oor'))
     if cmdargs.count > (slot.friends_available - slot.friends_pinged):
-        friends_parser.error('not enough friends left')
+        friends_parser.error(i18n('error-not-enough-friends'))
     Friends(cmdargs.count).activate(slot)
 
 def channels(cmdargs: argparse.Namespace, slot: SaveSlot):
@@ -35,9 +35,9 @@ def channels(cmdargs: argparse.Namespace, slot: SaveSlot):
         print(f'{slot.promos_used}/{slot.promo_available}')
         return
     if cmdargs.count <= 0:
-        channels_parser.error('count must be strictly positive')
+        channels_parser.error(i18n('error-count-oor'))
     if cmdargs.count > (slot.promo_available - slot.promos_used):
-        channels_parser.error('not enough channels left')
+        channels_parser.error(i18n('error-not-enough-channels'))
     Channels(cmdargs.count).activate(slot)
 
 def main(args: list[str], slot: SaveSlot):

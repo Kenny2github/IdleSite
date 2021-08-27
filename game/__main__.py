@@ -9,6 +9,7 @@ from game import import_game
 # to be specified after the command name
 
 if len(sys.argv) < 2:
+    # untranslated: should not be encountered by regular users
     sys.exit('game: error: cannot directly run '
              'the game module with no arguments')
 
@@ -23,9 +24,11 @@ if '--completion' in sys.argv:
 try:
     game = import_game(command)
 except ImportError:
+    # untranslated: should not be encountered by regular users
     raise SystemExit('game: error: invalid command %r' % command) from None
 else:
     if not (hasattr(game, 'completion') and hasattr(game, 'main')):
+        # untranslated: should not be encountered by regular users
         sys.exit('game: error: invalid command %r' % command)
     if completion:
         print(game.completion)

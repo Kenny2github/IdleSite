@@ -53,6 +53,7 @@ class _JL(type):
             return self
         if isinstance(self, tuple):
             return tuple(map(cls.unserialize, self))
+        # untranslated: should not be encountered by regular users
         raise TypeError('cannot unserialize %r of type %r' % (
             self, type(self).__name__))
 
@@ -82,6 +83,7 @@ class _JS:
                 obj[attr] = cls.serialize(getattr(self, attr))
             obj['__mname__'] = self.__mname__
             return obj
+        # untranslated: should not be encountered by regular users
         raise TypeError('cannot serialize %r of type %r' % (
             self, type(self).__name__))
 
