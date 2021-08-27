@@ -1,5 +1,5 @@
 {
-	"start": "Welcome to IdleSite!\nThe object of the game is to make it to 8 billion (cumulative) views.\nRun `game-help` to see a list of available commands.\nRun `create-site` to get started.\nRun `check stats` to see statistics about your site at any point.",
+	"start": "Welcome to IdleSite!\nThe object of the game is to make it to 8 billion (cumulative) views.\nRun `game-help` to see a list of available commands.\nRun `create-site` to get started.\nRun `check stats` to see statistics about your site at any point.\nRun `<any command> --help` to learn about options to the command.",
 	"subcommands": "subcommands",
 	"creating-slot": "Creating slot '{0}'...",
 	"no-save-slots": "You do not have any existing save slots. Slot '{0}' will now be created for you.",
