@@ -6,7 +6,10 @@ from decimal import Decimal
 from dataclasses import dataclass, field
 from .i18n import i18n, pi18n
 
+# the game ends at 8bn views because that exceeds Earth's population
 END = 8_000_000_000
+# reciprocal; ignores the view loss caused by ads
+MOST_PROFITABLE_AD_PROPORTION = 3
 
 with open('brightness.json') as f:
     BRIGHTNESS: list[list[Decimal]] = json.load(f, parse_float=Decimal)
@@ -221,6 +224,7 @@ class SaveSlot(_JS, metaclass=_JL):
     cdn_servers: list[tuple[int, int]] = field(default_factory=list)
 
     money: Decimal = Decimal()
+    ad_proportion: Decimal = Decimal()
 
     difficulty_multiplier: Decimal = Decimal('1')
     friends_pinged: int = 0
@@ -263,7 +267,7 @@ class SaveSlot(_JS, metaclass=_JL):
         last_touch = self.last_touch
         self.last_touch = int(time())
         old_day_number = (last_touch - self.first_touch) // self.day_length
-        day_number = (self.last_touch - self.first_touch) // self.day_length
+        day_number = self.today
         if len(self.views) != old_day_number:
             raise RuntimeError(i18n('wrong-view-day-count'))
         warned_trans = []
@@ -297,6 +301,12 @@ class SaveSlot(_JS, metaclass=_JL):
                 bonus = math.floor(math.log10(self.views[-1][-1] or 1))
                 self.view_rate += bonus
                 view_rate += bonus
+            ads = self.ad_proportion
+            new_rate = view_rate * (
+                -MOST_PROFITABLE_AD_PROPORTION * ads).exp()
+            self.money += ads * new_rate
+            view_rate = math.ceil(new_rate)
+            if self.views:
                 self.views.append((
                     view_rate, self.views[-1][-1] + view_rate))
             else:

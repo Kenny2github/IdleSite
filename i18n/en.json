@@ -1,5 +1,6 @@
 {
 	"start": "Welcome to IdleSite!\nThe object of the game is to make it to 8 billion (cumulative) views.\nRun `game-help` to see a list of available commands.\nRun `create-site` to get started.\nRun `check stats` to see statistics about your site at any point.",
+	"subcommands": "subcommands",
 	"creating-slot": "Creating slot '{0}'...",
 	"no-save-slots": "You do not have any existing save slots. Slot '{0}' will now be created for you.",
 	"one-save-slot": "You do not have any save slot currently in use. Slot '{0}' has been automatically selected since it is your only existing slot.",
@@ -73,6 +74,11 @@
 	"select-slot-force-create-opt": "Unconditionally select the slot, even if it doesn't exist.",
 	"select-slot-non-interactive-opt": "Do not prompt on nonexistent slots.",
 	"select-slot-create-conf": "Slot '{0}' does not exist. Do you intend to queue its creation? (y/n) ",
+	"set-desc": "Change site settings. (Or get them, if the new value for the setting is unspecified.)",
+	"set-ads-desc": "Set the proportion of your site that is occupied by advertisements.",
+	"set-ads-proportion-opt": "The proportion (in range [0, 1]).",
+	"set-difficulty-desc": "Set the difficulty multiplier of the game.",
+	"set-difficulty-multiplier-opt": "The multiplier (where < 1 is easier and > 1 is harder than normal 1).",
 	"boost-advertisement-name": "Advertisements:",
 	"boost-desc": "{0} views/day, expires on day #{1}",
 	"advertisement-desc": "Advertisement: {0} views/day, expires on day #{1}",
