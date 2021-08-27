@@ -8,6 +8,7 @@
 	"save-slot-prompt": "Please enter the slot to save your progress into: ",
 	"wrong-view-day-count": "Number of days worth of views does not match the number of days that have passed",
 	"create-site-desc": "Start a new game: create a new site.",
+	"create-site-ad-proportion-opt": "The proportion of the site to be occupied by ads, in range [0, 1]. Default 0.",
 	"create-site-difficulty-opt": "Difficulty multiplier for the game, default 1",
 	"create-site-day-length-opt": "Length of one day, in seconds. Default is one real day. Set lower for faster game.",
 	"create-site-save-slot-opt": "Name of save slot to use. If unspecified, you will be asked interactively to name your slot, unless --non-interactive is specified. If you specify an existing slot's name, you will be prompted to overwrite it, unless --force-overwrite is specified, in which case it will be, or --non-interactive is specified, in which case it will not.",

@@ -8,6 +8,9 @@ from .i18n import i18n, pi18n
 parser = argparse.ArgumentParser(
     prog='create-site', description=i18n('create-site-desc'))
 parser.add_argument(
+    '-a', '--ad-proportion', type=Decimal, default=Decimal(),
+    help=i18n('create-site-ad-proportion-opt'))
+parser.add_argument(
     '-d', '--difficulty', type=Decimal, default=Decimal('1'),
     help=i18n('create-site-difficulty-opt'))
 parser.add_argument(
@@ -23,12 +26,18 @@ parser.add_argument(
     '-I', '--non-interactive', action='store_false', dest='interactive',
     help=i18n('create-site-non-interactive-opt'))
 
-completion = "-o nosort -W '-d --difficulty -t --day-length " \
-    "-s --save-slot -f --force-overwrite -I --non-interactive'"
+completion = "-o nosort -W '-a --ad-proportion -d --difficulty " \
+    "-t --day-length -s --save-slot -f --force-overwrite -I --non-interactive'"
 no_load_slot = True
 
 def main(args: list[str], slot: None = None) -> int:
     cmdargs = parser.parse_args(args[1:])
+    if not (0 <= cmdargs.ad_proportion <= 1):
+        parser.error('ad proportion must be in range [0, 1]')
+    if cmdargs.difficulty <= 0:
+        parser.error('difficulty must be strictly positive')
+    if cmdargs.day_length <= 0:
+        parser.error('day length must be strictly positive')
     slot = cmdargs.slot
     if not slot and not cmdargs.interactive:
         return 1
@@ -45,7 +54,8 @@ def main(args: list[str], slot: None = None) -> int:
             pass
         else:
             return 1
-    data = SaveSlot(difficulty_multiplier=cmdargs.difficulty,
+    data = SaveSlot(ad_proportion=cmdargs.ad_proportion,
+                    difficulty_multiplier=cmdargs.difficulty,
                     day_length=cmdargs.day_length)
     save_slot(slot, data)
     if cmdargs.interactive:
