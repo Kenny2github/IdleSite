@@ -8,6 +8,8 @@ A game where you set up a website that makes money from views.
 
 ## To Play
 ```bash
+$ git clone https://github.com/Kenny2github/IdleSite.git
+$ cd IdleSite
 $ source activate.sh
 $ start
 ```
