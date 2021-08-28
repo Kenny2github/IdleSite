@@ -37,7 +37,7 @@ stats_parser = subparsers.add_parser(
 stats_parser.add_argument('-n', '--stats', choices=STAT_TYPES, nargs='*',
                           help=i18n('check-stat-opt'))
 
-BOOST_TYPES = ['advertisement']
+BOOST_TYPES = ['advertisement', 'friends', 'channels']
 boosts_parser = subparsers.add_parser(
     'boosts', description=i18n('check-boosts-desc'))
 boosts_parser.add_argument('-t', '--type', choices=BOOST_TYPES,
