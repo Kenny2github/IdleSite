@@ -14,7 +14,7 @@ parser.add_argument(
     '-d', '--difficulty', type=Decimal, default=Decimal('1'),
     help=i18n('create-site-difficulty-opt'))
 parser.add_argument(
-    '-t', '--day-length', type=int, default=60*60*24,
+    '-t', '--day-length', type=int, default=20 * 60,
     help=i18n('create-site-day-length-opt'))
 parser.add_argument(
     '-s', '--save-slot', default=None, dest='slot',

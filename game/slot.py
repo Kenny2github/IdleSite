@@ -274,7 +274,7 @@ class SaveSlot(_JS, metaclass=_JL):
     friends_pinged: int = 0
     promos_used: int = 0
 
-    day_length: int = 60 * 60 * 24 # length of in-game day, default real day
+    day_length: int = 20 * 60 # length of in-game day, default one minecraft day
     first_touch: int = field(default_factory=lambda: int(time()))
     last_touch: int = field(default_factory=lambda: int(time()))
 
